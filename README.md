@@ -1,23 +1,22 @@
-# docker-airflow
-[![CircleCI branch](https://img.shields.io/circleci/project/puckel/docker-airflow/master.svg?maxAge=2592000)](https://circleci.com/gh/puckel/docker-airflow/tree/master)
-[![Docker Hub](https://img.shields.io/badge/docker-ready-blue.svg)](https://hub.docker.com/r/puckel/docker-airflow/)
-[![Docker Pulls](https://img.shields.io/docker/pulls/puckel/docker-airflow.svg?maxAge=2592000)]()
-[![Docker Stars](https://img.shields.io/docker/stars/puckel/docker-airflow.svg?maxAge=2592000)]()
+# docker-airflow-mesos
+[![CircleCI branch](https://img.shields.io/circleci/project/Stibbons/docker-airflow-mesos/master.svg?maxAge=2592000)](https://circleci.com/gh/Stibbons/docker-airflow-mesos/tree/master)
+[![Docker Hub](https://img.shields.io/badge/docker-ready-blue.svg)](https://hub.docker.com/r/stibbons31/docker-airflow-mesos/)
+[![Docker Pulls](https://img.shields.io/docker/pulls/stibbons31/docker-airflow-mesos.svg?maxAge=2592000)]()
+[![Docker Stars](https://img.shields.io/docker/stars/stibbons31/docker-airflow-mesos.svg?maxAge=2592000)]()
 
 This repository contains **Dockerfile** of [airflow](https://github.com/apache/incubator-airflow) for [Docker](https://www.docker.com/)'s [automated build](https://registry.hub.docker.com/u/puckel/docker-airflow/) published to the public [Docker Hub Registry](https://registry.hub.docker.com/).
 
 ## Informations
 
-* Based on Debian Jessie official Image [debian:jessie](https://registry.hub.docker.com/_/debian/) and uses the official [Postgres](https://hub.docker.com/_/postgres/) as backend and [Redis](https://hub.docker.com/_/redis/) as queue
+* Based on Ubunutu 16.04 image and uses the official [Postgres](https://hub.docker.com/_/postgres/) as backend and [Redis](https://hub.docker.com/_/redis/) as queue
 * Install [Docker](https://www.docker.com/)
-* Install [Docker Compose](https://docs.docker.com/compose/install/)
 * Following the Airflow release from [Python Package Index](https://pypi.python.org/pypi/airflow)
 
 ## Installation
 
 Pull the image from the Docker repository.
 
-        docker pull puckel/docker-airflow
+        docker pull stibbons31/docker-airflow-mesos
 
 ## Build
 
@@ -27,19 +26,19 @@ For example, if you need to install [Extra Packages](https://pythonhosted.org/ai
 
 ## Usage
 
-By default, docker-airflow runs Airflow with **SequentialExecutor** :
+By default, docker-airflow-mesos runs Airflow with **MesosExecutor** :
 
-        docker run -d -p 8080:8080 puckel/docker-airflow
+        docker run -d -p 8080:8080 Stibbons/docker-airflow
 
-If you want to run another executor, use the other docker-compose.yml files provided in this repository.
+The following environment variable should be provided:
 
-For **LocalExecutor** :
-
-        docker-compose -f docker-compose-LocalExecutor.yml up -d
-
-For **CeleryExecutor** :
-
-        docker-compose -f docker-compose-CeleryExecutor.yml up -d
+    POSTGRES_USER: xxx
+    POSTGRES_PASSWORD: xxx
+    POSTGRES_HOST: xxx
+    POSTGRES_PORT: xxx
+    POSTGRES_DB: xxx
+    REDIS_HOST: xxx
+    REDIS_PORT: xxx
 
 NB : If you don't want to have DAGs example loaded (default=True), you've to set the following environment variable :
 
