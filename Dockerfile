@@ -1,19 +1,27 @@
 # VERSION 1.8.0
 # AUTHOR: Matthieu "Puckel_" Roisil
 # DESCRIPTION: Basic Airflow container
-# BUILD: docker build --rm -t puckel/docker-airflow .
-# SOURCE: https://github.com/puckel/docker-airflow
+# BUILD: docker build --rm -t Stibbons/docker-airflow .
+# SOURCE: https://github.com/Stibbons/docker-airflow
 
 FROM debian:jessie
-MAINTAINER Puckel_
+MAINTAINER Stibbons
 
 # Never prompts the user for choices on installation/configuration of packages
 ENV DEBIAN_FRONTEND noninteractive
 ENV TERM linux
 
 # Airflow
-ARG AIRFLOW_VERSION=1.8.0
+# Released version:
+#   ARG AIRFLOW_VERSION=1.8.0
+#   ARG AIRFLOW_REPO=https://github.com/apache/incubator-airflow.git
+#   ARG AIRFLOW_COMMIT=
+# HEAD:
+ARG AIRFLOW_VERSION=1.9.0+fs1
 ARG AIRFLOW_HOME=/usr/local/airflow
+ARG AIRFLOW_REPO=https://github.com/Stibbons/incubator-airflow
+ARG AIRFLOW_COMMIT=b55f41f2c22e210d130a0b42586f0385bd5515a7
+ARG AIRFLOW_OPTS=crypto,celery,postgres,hive,hdfs,jdbc,redis
 
 # Define en_US.
 ENV LANGUAGE en_US.UTF-8
@@ -55,8 +63,15 @@ RUN set -ex \
     && pip install pyOpenSSL \
     && pip install ndg-httpsclient \
     && pip install pyasn1 \
-    && pip install airflow[crypto,celery,postgres,hive,hdfs,jdbc]==$AIRFLOW_VERSION \
-    && pip install celery[redis]==3.1.17 \
+    && ( \
+        ( [ ! -z $AIRFLOW_COMMIT ] \
+            && pip install git+$AIRFLOW_REPO@$AIRFLOW_COMMIT#egg=airflow[$AIRFLOW_OPTS]==$AIRFLOW_VERSION \
+            && pip install html5lib==1.0b8 \
+        ) || ( \
+               pip install airflow[$AIRFLOW_OPTS]==$AIRFLOW_VERSION \
+            && pip install celery[redis]==3.1.17 \
+        ) \
+       ) \
     && apt-get remove --purge -yqq $buildDeps \
     && apt-get clean \
     && rm -rf \
@@ -66,6 +81,9 @@ RUN set -ex \
         /usr/share/man \
         /usr/share/doc \
         /usr/share/doc-base
+
+RUN set -ex \
+    && pip install bleach==2.0 html5lib==1.0b10 six==1.10.0 redis
 
 COPY script/entrypoint.sh /entrypoint.sh
 COPY config/airflow.cfg ${AIRFLOW_HOME}/airflow.cfg

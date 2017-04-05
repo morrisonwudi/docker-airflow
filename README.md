@@ -60,6 +60,13 @@ For encrypted connection passwords (in Local or Celery Executor), you must have 
 
 Check [Airflow Documentation](https://pythonhosted.org/airflow/)
 
+## Airflow Developer version
+
+This dockerfile can fetch Airflow source code from git. Set the following environment variable in
+your `docker build` to set the SHA-1 of the commit to use: `AIRFLOW_COMMIT`.
+
+You can also overwrite the URL of the source code repository with: `AIRFLOW_REPO`.
+
 
 ## Install custom python package
 
